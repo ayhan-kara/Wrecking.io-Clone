@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private float lastMousePosition;
 
     private bool isGrounded = true;
+    public bool isBonus = false;
     #endregion
 
     #region Monobehaviour
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         SwipeMovement();
         Grounded();
+        Fail();
         if(!isGrounded)
         {
             Falling();
@@ -56,18 +58,12 @@ public class PlayerController : MonoBehaviour
             lastMousePosition = Input.mousePosition.x;
             if (lastMousePosition > startMousePosition)
             {
-                //transform.RotateAround(transform.position, Vector3.up, 10 * turnSpeed * Time.deltaTime);
                 transform.RotateAroundLocal(transform.up, 10 * turnSpeed * Time.deltaTime);
             }
             else if (lastMousePosition < startMousePosition)
             {
                 transform.RotateAroundLocal(-transform.up, 10 * turnSpeed * Time.deltaTime);
-                //transform.RotateAround(transform.position, -Vector3.up, 10 * turnSpeed * Time.deltaTime);
             }
-        }
-        else
-        {
-            lastMousePosition = lastMousePosition;
         }
     }
     #endregion
@@ -95,10 +91,45 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Fail()
+    {
+        const float posY = .5f;
+        if (transform.position.y < posY)
+        {
+            Debug.LogError("Fail");
+            Destroy(transform.parent.gameObject);
+            //fail panel active
+        }
+    }
+
     IEnumerator Fall()
     {
         yield return new WaitForSeconds(.3f);
         isGrounded = true;
+    }
+    #endregion
+
+    #region Collision
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("BonusBox"))
+        {
+            Destroy(collision.gameObject);
+            isBonus = true;
+        }
+    }
+    #endregion
+
+    #region Bonus Wrecking
+    public void BonusWrecking()
+    {
+        StartCoroutine(Bonus());
+    }
+
+    IEnumerator Bonus()
+    {
+        yield return new WaitForSeconds(5f);
+        isBonus = false;
     }
     #endregion
 }
