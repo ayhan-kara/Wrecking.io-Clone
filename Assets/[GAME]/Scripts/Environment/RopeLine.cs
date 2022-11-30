@@ -20,6 +20,8 @@ public class RopeLine : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.Instance.isStarted)
+            return;
         ConnectRopeLine();
     }
     #endregion

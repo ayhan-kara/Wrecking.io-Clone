@@ -23,15 +23,17 @@ public class WreckingBallController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.isStarted)
+            return;
         TurnAround();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("EnemyCar"))
+        if (collision.gameObject.CompareTag("Car"))
         {
             float velocity = rb.velocity.magnitude;
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * velocity * hitPower);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * velocity * hitPower * 2);
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.forward * velocity * hitPower / 4);
 
         }

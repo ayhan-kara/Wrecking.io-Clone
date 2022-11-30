@@ -25,11 +25,14 @@ public class EnemyCarsManager : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManager.Instance.isStarted)
+            return;
         if (enemyCars.Count <= 0)
         {
             Debug.LogWarning("Win");
             isEmptyCarList = true;
             //win panel active
+            GameManager.Instance.WinGame();
         }
     }
     #endregion

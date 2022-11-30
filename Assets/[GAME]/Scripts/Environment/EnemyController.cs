@@ -1,32 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
-public class PlayerController : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     #region Private-Public Variables
-    [Header ("Movement")]
+    [Header("Movement")]
     public float forwardSpeed;
     public float turnSpeed;
 
-    private float startMousePosition;
-    private float lastMousePosition;
+    Vector3 destination;
+    public Transform playerDestination;
 
     private bool isGrounded = true;
     public bool isBonus = false;
     #endregion
 
     #region Monobehaviour
-
     void Update()
     {
         if (!GameManager.Instance.isStarted)
             return;
-        SwipeMovement();
         Grounded();
         Fail();
-        if(!isGrounded)
+        if (!isGrounded)
         {
             Falling();
         }
@@ -41,29 +39,25 @@ public class PlayerController : MonoBehaviour
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y);
         }
         transform.position += transform.right * forwardSpeed * Time.deltaTime;
+        EnemyCarMovement();
     }
     #endregion
 
-    #region Movement
-    void SwipeMovement()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            startMousePosition = Input.mousePosition.x;
 
-            lastMousePosition = startMousePosition;
-        }
-        else if (Input.GetMouseButton(0))
+    #region AI Movement
+    void EnemyCarMovement()
+    {
+
+        if ((playerDestination.position - transform.position).magnitude < 10)
         {
-            lastMousePosition = Input.mousePosition.x;
-            if (lastMousePosition > startMousePosition)
-            {
-                transform.RotateAroundLocal(transform.up, 10 * turnSpeed * Time.deltaTime);
-            }
-            else if (lastMousePosition < startMousePosition)
-            {
-                transform.RotateAroundLocal(-transform.up, 10 * turnSpeed * Time.deltaTime);
-            }
+            //spin
+            transform.RotateAroundLocal(transform.up, 10 * turnSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation
+              , Quaternion.LookRotation(playerDestination.position - transform.position)
+              , 3f * Time.deltaTime);
         }
     }
     #endregion
@@ -94,10 +88,8 @@ public class PlayerController : MonoBehaviour
         const float posY = .5f;
         if (transform.position.y < posY)
         {
-            Debug.LogError("Fail");
+            EnemyCarsManager.Instance.enemyCars.Remove(transform.parent.gameObject);
             Destroy(transform.parent.gameObject);
-            //fail panel active
-            GameManager.Instance.FailGame();
         }
     }
 
@@ -108,27 +100,4 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region Collision
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("BonusBox"))
-        {
-            Destroy(collision.gameObject);
-            isBonus = true;
-        }
-    }
-    #endregion
-
-    #region Bonus Wrecking
-    public void BonusWrecking()
-    {
-        StartCoroutine(Bonus());
-    }
-
-    IEnumerator Bonus()
-    {
-        yield return new WaitForSeconds(5f);
-        isBonus = false;
-    }
-    #endregion
 }
