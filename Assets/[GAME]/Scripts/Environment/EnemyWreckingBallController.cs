@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class WreckingBallController : MonoBehaviour
+public class EnemyWreckingBallController : MonoBehaviour
 {
     public float hitPower;
 
     public Rigidbody rb;
 
-    [SerializeField] TrailRenderer ballTrail;
+    [SerializeField] TrailRenderer ropeTrail;
     [SerializeField] LineRenderer ropeLine;
-    [SerializeField] PlayerController playerController;
+    [SerializeField] EnemyController enemyController;
     [SerializeField] Transform bonusPos;
     [SerializeField] Transform carPos;
 
 
     private void Start()
     {
-        ballTrail.emitting = false;
+        ropeTrail.emitting = false;
     }
 
     private void FixedUpdate()
@@ -30,7 +30,7 @@ public class WreckingBallController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("EnemyCar"))
+        if (collision.gameObject.CompareTag("PlayerCar"))
         {
             float velocity = rb.velocity.magnitude;
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * velocity * hitPower * 2);
@@ -43,17 +43,17 @@ public class WreckingBallController : MonoBehaviour
     {
         ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
 
-        if (playerController.isBonus)
+        if (enemyController.isBonus)
         {
             Destroy(joint);
             transform.RotateAround(carPos.position, Vector3.up, 10f);
-            ballTrail.emitting = true;
+            ropeTrail.emitting = true;
             ropeLine.enabled = false;
-            playerController.BonusWrecking();
+            enemyController.BonusWrecking();
         }
         else
         {
-            ballTrail.emitting = false;
+            ropeTrail.enabled = false;
             ropeLine.enabled = true;
             if (!transform.GetComponent<ConfigurableJoint>())
                 transform.AddComponent<ConfigurableJoint>().connectedBody = carPos.GetComponent<Rigidbody>();

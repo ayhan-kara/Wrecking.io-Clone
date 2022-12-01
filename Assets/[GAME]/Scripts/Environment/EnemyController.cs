@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour
             return;
         if (isGrounded)
         {
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y,transform.eulerAngles.z);
         }
         transform.position += transform.right * forwardSpeed * Time.deltaTime;
         EnemyCarMovement();
@@ -55,9 +55,7 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation
-              , Quaternion.LookRotation(playerDestination.position - transform.position)
-              , 3f * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, playerDestination.rotation, Time.deltaTime * turnSpeed);
         }
     }
     #endregion
@@ -100,4 +98,27 @@ public class EnemyController : MonoBehaviour
     }
     #endregion
 
+    #region Collision
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("BonusBox"))
+        {
+            Destroy(collision.gameObject);
+            isBonus = true;
+        }
+    }
+    #endregion
+
+    #region Bonus Wrecking
+    public void BonusWrecking()
+    {
+        StartCoroutine(Bonus());
+    }
+
+    IEnumerator Bonus()
+    {
+        yield return new WaitForSeconds(5f);
+        isBonus = false;
+    }
+    #endregion
 }

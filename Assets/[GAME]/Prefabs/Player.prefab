@@ -313,7 +313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1544366720651475656
 RectTransform:
   m_ObjectHideFlags: 0
@@ -418,8 +418,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 1544366721740246486}
   m_Layer: 0
   m_Name: PlayerCar
-  m_TagString: Car
+  m_TagString: PlayerCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -792,7 +792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forwardSpeed: 6
-  turnSpeed: 0.55
+  turnSpeed: 1.2
   isBonus: 0
 --- !u!1 &1544366721823333368
 GameObject:
@@ -1129,7 +1129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitPower: 100000
   rb: {fileID: 1544366721980371639}
-  ropeTrail: {fileID: 1544366721980371633}
+  ballTrail: {fileID: 1544366721980371633}
   ropeLine: {fileID: 1544366721199246006}
   playerController: {fileID: 1544366721740246486}
   bonusPos: {fileID: 1544366721943614895}
